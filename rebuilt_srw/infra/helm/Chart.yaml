@@ -1,4 +1,0 @@
-apiVersion: v2
-name: srw
-version: 0.1.0
-description: Helm chart for SaaS Smart Report Writer

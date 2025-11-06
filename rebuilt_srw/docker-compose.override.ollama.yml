@@ -1,9 +1,0 @@
-services:
-  ollama:
-    image: ollama/ollama:latest
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/version"]
-      interval: 10s
-      timeout: 3s
-      retries: 20
-    ports: []
