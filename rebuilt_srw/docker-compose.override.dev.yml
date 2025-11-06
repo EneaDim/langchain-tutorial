@@ -1,0 +1,23 @@
+services:
+  api:
+    environment:
+      - PYTHONPATH=/app:/opt/srw
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./smart_report_writer:/opt/srw:delegated
+      - shareddata:/shared
+  worker:
+    environment:
+      - PYTHONPATH=/app:/opt/srw
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./smart_report_writer:/opt/srw:delegated
+      - shareddata:/shared
+  ui:
+    volumes:
+      - shareddata:/shared
+
+volumes:
+  shareddata:

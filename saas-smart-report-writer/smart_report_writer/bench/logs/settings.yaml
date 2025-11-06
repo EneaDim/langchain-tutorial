@@ -1,0 +1,7 @@
+network:
+  interface: eth0
+  retry_limit: 5
+  mtu: 1500
+firmware:
+  version: 1.4.2
+  features: [telemetry, over-the-air]

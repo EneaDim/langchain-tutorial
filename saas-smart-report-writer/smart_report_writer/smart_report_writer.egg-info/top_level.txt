@@ -1,0 +1,1 @@
+smart_report_writer

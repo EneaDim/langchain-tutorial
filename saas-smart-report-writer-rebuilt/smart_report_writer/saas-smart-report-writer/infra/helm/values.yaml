@@ -1,0 +1,11 @@
+api:
+  replicas: 2
+ui:
+  replicas: 1
+worker:
+  replicas: 2
+image:
+  repository: your-registry/srw
+  tag: latest
+ingress:
+  enabled: false

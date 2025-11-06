@@ -1,0 +1,15 @@
+services:
+  api:
+    environment:
+      PYTHONPATH: /app:/opt/srw
+    volumes:
+      - ./smart_report_writer:/opt/srw:delegated
+  worker:
+    environment:
+      PYTHONPATH: /app:/opt/srw
+    volumes:
+      - ./smart_report_writer:/opt/srw:delegated
+      - shareddata:/shared
+  ui:
+    volumes:
+      - shareddata:/shared

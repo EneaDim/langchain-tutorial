@@ -1,0 +1,5 @@
+services:
+  api:
+    ports: ["8001:8000"]
+  ui:
+    ports: ["8502:8501"]
