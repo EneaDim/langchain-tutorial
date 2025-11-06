@@ -1,0 +1,57 @@
+image:
+  repository: your-registry/srw
+  tag: latest
+  pullPolicy: IfNotPresent
+
+api:
+  replicas: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+worker:
+  replicas: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+ingress:
+  enabled: false
+  className: ""
+  hosts:
+    - host: srw.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+env:
+  POSTGRES_DSN: "postgresql+psycopg2://postgres:postgres@db:5432/srw"
+  REDIS_URL: "redis://redis:6379/0"
+  S3_ENDPOINT: "http://minio:9000"
+  S3_BUCKET: "srw-artifacts"
+  S3_REGION: "us-east-1"
+  S3_ACCESS_KEY: "minio"
+  S3_SECRET_KEY: "minio123"
+  OLLAMA_BASE_URL: "http://ollama:11434"
+  OLLAMA_MODEL: "llama3.2:latest"
+  SRW_PER_FILE_CAP: "12000"
+  SRW_TOTAL_CAP: "150000"
+  SRW_TEMPERATURE: "0.1"
+  CORS_ORIGINS: "http://localhost:8501"
+  JWT_DEV_BEARER: "devtoken-please-dont-use-in-prod"
+  RATE_LIMIT_PER_MIN: "120"
+  MAX_UPLOAD_MB: "50"
+  ALLOWED_MIME_LIST: "text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/markdown"
+  OIDC_ISSUER: "dev"
+  OIDC_AUDIENCE: "srw"
+  OIDC_CLIENT_ID: "srw-dev"
+  FEATURE_DOCX: "true"
+  FEATURE_PII_REDACTION: "false"

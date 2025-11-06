@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: srw
+      POSTGRES_USER: srw
+      POSTGRES_PASSWORD: srw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U srw -d srw"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    # no host port (avoids conflicts with local 5432)

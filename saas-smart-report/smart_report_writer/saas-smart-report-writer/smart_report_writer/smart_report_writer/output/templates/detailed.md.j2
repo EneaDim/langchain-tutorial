@@ -1,0 +1,33 @@
+# {{ title }}
+**Topic:** {{ topic or "N/A" }}  
+**Files:** {{ docs|length }} document(s)
+
+---
+## Executive Summary
+{{ llm_sections.summary_text | trim }}
+{% if llm_sections.docs_text and llm_sections.docs_text|trim %}
+---
+## Documents
+{{ llm_sections.docs_text | trim }}
+{% endif %}
+{% if llm_sections.tables_text and llm_sections.tables_text|trim and llm_sections.tables_text != "No tabular data detected." %}
+---
+## Tables
+{{ llm_sections.tables_text | trim }}
+{% endif %}
+{% if llm_sections.logs_text and llm_sections.logs_text|trim and llm_sections.logs_text != "[No content]" %}
+---
+## Logs / Configs
+{{ llm_sections.logs_text | trim }}
+{% endif %}
+{% if llm_sections.code_text and llm_sections.code_text|trim and llm_sections.code_text != "[No content]" %}
+---
+## Code (if provided)
+{{ llm_sections.code_text | trim }}
+{% endif %}
+
+---
+## Sources
+{% for d in docs -%}
+- {{ d.path }} ({{ d.mimetype or "unknown" }})
+{%- endfor %}
