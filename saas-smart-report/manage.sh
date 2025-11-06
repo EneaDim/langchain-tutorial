@@ -8,6 +8,12 @@ UI_PORT_STD=8501
 API_PORT_ALT=8001
 UI_PORT_ALT=8502
 
+# Add MinIO ports (STD and ALT)
+MINIO_PORT_STD=9000
+MINIO_CONSOLE_PORT_STD=9001
+MINIO_PORT_ALT=9002
+MINIO_CONSOLE_PORT_ALT=9003
+
 # Compose files we’ll include if present (in this order)
 COMPOSE_ORDER=(
   "docker-compose.yaml"
@@ -47,10 +53,14 @@ ensure_ports_alt_file() {
   if ! exists "$PORTS_ALT_FILE"; then
     cat > "$PORTS_ALT_FILE" <<YAML
 services:
-  api: { ports: ["${API_PORT_ALT}:${API_PORT_STD}"] }
-  ui:  { ports: ["${UI_PORT_ALT}:${UI_PORT_STD}"] }
+  api:    { ports: ["${API_PORT_ALT}:${API_PORT_STD}"] }
+  ui:     { ports: ["${UI_PORT_ALT}:${UI_PORT_STD}"] }
+  minio:
+    ports:
+      - "${MINIO_PORT_ALT}:${MINIO_PORT_STD}"
+      - "${MINIO_CONSOLE_PORT_ALT}:${MINIO_CONSOLE_PORT_STD}"
 YAML
-    echo "[info] Created ${PORTS_ALT_FILE} (API:${API_PORT_ALT}, UI:${UI_PORT_ALT})"
+    echo "[info] Created ${PORTS_ALT_FILE} (API:${API_PORT_ALT}, UI:${UI_PORT_ALT}, MinIO:${MINIO_PORT_ALT}/${MINIO_CONSOLE_PORT_ALT})"
   fi
 }
 
@@ -67,8 +77,9 @@ start_host() {
   ensure_env_file
 
   local extra_ports=()
-  if port_in_use "$API_PORT_STD" || port_in_use "$UI_PORT_STD"; then
-    echo "[warn] ${API_PORT_STD} or ${UI_PORT_STD} busy → switching to alt ports (${API_PORT_ALT}/${UI_PORT_ALT})"
+  # If ANY standard port is busy (API, UI, or MinIO), switch to ALT
+  if port_in_use "$API_PORT_STD" || port_in_use "$UI_PORT_STD" || port_in_use "$MINIO_PORT_STD" || port_in_use "$MINIO_CONSOLE_PORT_STD"; then
+    echo "[warn] Standard ports busy → switching to alt ports (API:${API_PORT_ALT}, UI:${UI_PORT_ALT}, MinIO:${MINIO_PORT_ALT}/${MINIO_CONSOLE_PORT_ALT})"
     ensure_ports_alt_file
     extra_ports+=( "$PORTS_ALT_FILE" )
   elif exists "$PORTS_STD_FILE"; then
@@ -82,9 +93,13 @@ start_host() {
     up -d --build db redis minio createbucket api worker ui
 
   echo "[ok] Stack up. API health:"
-  local api_port=$(port_in_use "$API_PORT_STD" && echo "$API_PORT_STD" || echo "$API_PORT_ALT")
+  local api_port=$API_PORT_STD
+  if port_in_use "$API_PORT_ALT"; then api_port=$API_PORT_ALT; fi
   curl -sf "http://localhost:${api_port}/health/liveness" && echo || true
-  echo "[hint] UI → http://localhost:$(port_in_use "$UI_PORT_STD" && echo "$UI_PORT_STD" || echo "$UI_PORT_ALT")"
+
+  local ui_port=$UI_PORT_STD
+  if port_in_use "$UI_PORT_ALT"; then ui_port=$UI_PORT_ALT; fi
+  echo "[hint] UI → http://localhost:${ui_port}"
 }
 
 start_internal_ollama() {
@@ -92,8 +107,8 @@ start_internal_ollama() {
 
   local extra=( "$OLLAMA_FILE" )
   local extra_ports=()
-  if port_in_use "$API_PORT_STD" || port_in_use "$UI_PORT_STD"; then
-    echo "[warn] ${API_PORT_STD} or ${UI_PORT_STD} busy → switching to alt ports (${API_PORT_ALT}/${UI_PORT_ALT})"
+  if port_in_use "$API_PORT_STD" || port_in_use "$UI_PORT_STD" || port_in_use "$MINIO_PORT_STD" || port_in_use "$MINIO_CONSOLE_PORT_STD"; then
+    echo "[warn] Standard ports busy → switching to alt ports (API:${API_PORT_ALT}, UI:${UI_PORT_ALT}, MinIO:${MINIO_PORT_ALT}/${MINIO_CONSOLE_PORT_ALT})"
     ensure_ports_alt_file
     extra_ports+=( "$PORTS_ALT_FILE" )
   elif exists "$PORTS_STD_FILE"; then
@@ -107,9 +122,13 @@ start_internal_ollama() {
     up -d --build db redis minio createbucket api worker ui ollama
 
   echo "[ok] Stack (with internal Ollama) up. API health:"
-  local api_port=$(port_in_use "$API_PORT_STD" && echo "$API_PORT_STD" || echo "$API_PORT_ALT")
+  local api_port=$API_PORT_STD
+  if port_in_use "$API_PORT_ALT"; then api_port=$API_PORT_ALT; fi
   curl -sf "http://localhost:${api_port}/health/liveness" && echo || true
-  echo "[hint] UI → http://localhost:$(port_in_use "$UI_PORT_STD" && echo "$UI_PORT_STD" || echo "$UI_PORT_ALT")"
+
+  local ui_port=$UI_PORT_STD
+  if port_in_use "$UI_PORT_ALT"; then ui_port=$UI_PORT_ALT; fi
+  echo "[hint] UI → http://localhost:${ui_port}"
 }
 
 stop() {
@@ -117,7 +136,6 @@ stop() {
 }
 
 clean() {
-  # removes containers + volumes declared in the project
   docker compose $(compose_args) down -v --remove-orphans
 }
 
@@ -152,6 +170,9 @@ Commands:
   logs                Tail api/worker/ui logs
   health [port]       Check API health (default port ${API_PORT_STD})
 
+Notes:
+- If ports ${MINIO_PORT_STD}/${MINIO_CONSOLE_PORT_STD} are busy, MinIO will be mapped to ${MINIO_PORT_ALT}/${MINIO_CONSOLE_PORT_ALT}.
+
 Examples:
   $0 start-host
   $0 start-internal
@@ -176,4 +197,3 @@ case "${cmd}" in
   health)           shift || true; health "${1:-}";;
   *)                usage; exit 1 ;;
 esac
-

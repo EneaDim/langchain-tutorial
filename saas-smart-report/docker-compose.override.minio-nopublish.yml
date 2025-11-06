@@ -1,0 +1,3 @@
+services:
+  minio:
+    ports: []    # unpublish ports to avoid "port is already allocated"
