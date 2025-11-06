@@ -1,34 +1,19 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "smart_report_writer"
+name = "smart-report-writer"
 version = "0.1.0"
-description = "Modular Smart Report Writer using LangChain + Ollama"
+description = "Business-grade document summarization and report generator (Ollama + LangChain)"
 readme = "README.md"
-license = {text = "MIT"}
-requires-python = ">=3.9"
-authors = [{name="Your Name", email="you@example.com"}]
+requires-python = ">=3.10"
+license = "MIT"
 
-dependencies = [
-  "langchain>=0.2",
-  "langchain-core>=0.2",
-  "langchain-ollama>=0.1.0",
-  "tenacity>=8.2",
-  "pandas>=2.0",
-  "jinja2>=3.1",
-  # optional
-  "chardet>=5.2; extra == 'all'",
-  "pdfplumber>=0.11; extra == 'all'",
-  "python-docx>=1.1; extra == 'all'",
-  "docxtpl>=0.16; extra == 'all'",
-  "beautifulsoup4>=4.12; extra == 'all'",
-  "lxml>=5.2; extra == 'all'",
-]
+[tool.setuptools]
+package-dir = {"" = "."}
 
-[project.optional-dependencies]
-all = ["chardet>=5.2", "pdfplumber>=0.11", "python-docx>=1.1", "docxtpl>=0.16", "beautifulsoup4>=4.12", "lxml>=5.2"]
-
-[project.scripts]
-smart-report-writer = "smart_report_writer.cli:main"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["smart_report_writer*"]
+exclude = ["bench*", "tests*", "docs*", "examples*", "smart_report_writer.egg-info*"]

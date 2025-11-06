@@ -1,31 +1,11 @@
 Metadata-Version: 2.4
-Name: smart_report_writer
+Name: smart-report-writer
 Version: 0.1.0
-Summary: Modular Smart Report Writer using LangChain + Ollama
-Author-email: Your Name <you@example.com>
-License: MIT
-Requires-Python: >=3.9
+Summary: Business-grade document summarization and report generator (Ollama + LangChain)
+License-Expression: MIT
+Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: langchain>=0.2
-Requires-Dist: langchain-core>=0.2
-Requires-Dist: langchain-ollama>=0.1.0
-Requires-Dist: tenacity>=8.2
-Requires-Dist: pandas>=2.0
-Requires-Dist: jinja2>=3.1
-Requires-Dist: chardet>=5.2; extra == "all"
-Requires-Dist: pdfplumber>=0.11; extra == "all"
-Requires-Dist: python-docx>=1.1; extra == "all"
-Requires-Dist: docxtpl>=0.16; extra == "all"
-Requires-Dist: beautifulsoup4>=4.12; extra == "all"
-Requires-Dist: lxml>=5.2; extra == "all"
-Provides-Extra: all
-Requires-Dist: chardet>=5.2; extra == "all"
-Requires-Dist: pdfplumber>=0.11; extra == "all"
-Requires-Dist: python-docx>=1.1; extra == "all"
-Requires-Dist: docxtpl>=0.16; extra == "all"
-Requires-Dist: beautifulsoup4>=4.12; extra == "all"
-Requires-Dist: lxml>=5.2; extra == "all"
 Dynamic: license-file
 
 # Smart Report Writer (Modular, LangChain + Ollama)

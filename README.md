@@ -4,7 +4,7 @@ This repository contains a collection of **tiny, fully working examples** showin
 [LangChain](https://python.langchain.com/) with [Ollama](https://ollama.com/) for local LLM workflows —
 from simple prompts to streaming, structured outputs, and RAG indexing.
 
-Each example is **stand-alone**: run it directly with `python <file>.py`.
+Each example is **stand-alone**: run it directly with `make run I=<tutorial_number>.py`.
 
 ---
 
