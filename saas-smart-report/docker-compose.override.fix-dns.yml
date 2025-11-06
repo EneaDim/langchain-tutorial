@@ -1,0 +1,7 @@
+services:
+  ui:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "api:host-gateway"
+    environment:
+      API_BASE: "http://api:8001"

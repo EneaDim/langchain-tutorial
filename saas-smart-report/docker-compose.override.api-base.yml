@@ -1,5 +1,4 @@
 services:
   ui:
     environment:
-      # Inside the Docker network, talk to the API service name on port 8000
-      API_BASE: http://api:8000
+      API_BASE: "http://api:8000"
