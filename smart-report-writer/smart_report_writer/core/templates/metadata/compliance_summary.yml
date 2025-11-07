@@ -1,0 +1,6 @@
+id: compliance_summary
+version: 1.0.0
+title: Compliance Summary
+content_kind: document
+file: compliance_summary.j2
+export: html

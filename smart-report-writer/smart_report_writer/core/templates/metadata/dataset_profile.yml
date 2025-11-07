@@ -1,0 +1,6 @@
+id: dataset_profile
+version: 1.0.0
+title: Dataset Profile
+content_kind: tabular
+file: dataset_profile.j2
+export: html

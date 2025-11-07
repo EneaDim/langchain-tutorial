@@ -1,4 +1,0 @@
-services:
-  ui:
-    environment:
-      API_BASE: "http://host.docker.internal:8000"

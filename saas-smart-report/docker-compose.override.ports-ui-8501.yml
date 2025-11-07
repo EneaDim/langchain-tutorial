@@ -1,4 +1,0 @@
-services:
-  ui:
-    ports:
-      - "8501:8501"

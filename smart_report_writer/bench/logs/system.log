@@ -1,4 +1,0 @@
-[2025-11-06 09:12:03] WARN: Connection timeout on eth0 (retries=3)
-[2025-11-06 09:12:07] INFO: Connection established after retry
-[2025-11-06 09:12:11] ERROR: Packet loss exceeds threshold (15%)
-[2025-11-06 09:13:00] INFO: Auto-restart triggered

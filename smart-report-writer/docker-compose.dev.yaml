@@ -1,0 +1,45 @@
+services:
+  api:
+    environment:
+      APP_ENV: dev
+    volumes:
+    - ./api:/app/api:ro
+    - ./smart_report_writer:/app/smart_report_writer:ro
+    - ./common:/app/common:ro
+    - ./config:/app/config:ro
+    command:
+    - uvicorn
+    - api.main:app
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --reload
+    extra_hosts:
+    - host.docker.internal:host-gateway
+  worker:
+    environment:
+      APP_ENV: dev
+    volumes:
+    - ./worker:/app/worker:ro
+    - ./smart_report_writer:/app/smart_report_writer:ro
+    - ./common:/app/common:ro
+    - ./config:/app/config:ro
+  ui:
+    environment:
+      STREAMLIT_SERVER_HEADLESS: 'true'
+      STREAMLIT_BROWSER_GATHER_USAGE_STATS: 'false'
+      SRW_API_BASE: http://api:8080
+    volumes:
+    - ./ui/streamlit:/app/ui/streamlit:ro
+    depends_on:
+      api:
+        condition: service_healthy
+  db:
+    ports: []
+  react:
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      SRW_API_BASE: http://api:8080

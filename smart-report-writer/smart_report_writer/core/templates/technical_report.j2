@@ -1,0 +1,17 @@
+{% extends "base" %}
+{% block content %}
+<h2>Technical Report</h2>
+<p>{{ analysis.summary }}</p>
+<h3>Entities</h3>
+<ul>
+  {% for e in analysis.entities %}
+    <li>{{ e.type }} — {{ e.text }} (offset {{ e.offset }})</li>
+  {% endfor %}
+</ul>
+<h3>Citations</h3>
+<ol>
+  {% for c in analysis.citations %}
+    <li>{{ c }}</li>
+  {% endfor %}
+</ol>
+{% endblock %}

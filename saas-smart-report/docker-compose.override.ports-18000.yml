@@ -1,7 +1,0 @@
-services:
-  api:
-    ports:
-      - "18000:8000"
-  ui:
-    ports:
-      - "18501:8501"
