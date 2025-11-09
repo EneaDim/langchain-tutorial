@@ -19,7 +19,7 @@ services:
 
   ui:
     build: ./ui
-    ports: ["8502:8501"]        # Apri http://localhost:8502
+    ports: ["8502:8501"]
     environment:
       - API_URL=http://backend:8000
     depends_on:
@@ -46,6 +46,19 @@ services:
 
   redis:
     image: redis:7
+
+  test:
+    build: ./backend
+    depends_on:
+      backend:
+        condition: service_started
+    working_dir: /app
+    volumes:
+      - ./backend/app:/app/app:ro
+      - ./tests:/app/tests:ro
+    entrypoint: >
+      sh -lc "pip install -q pytest httpx fakeredis &&
+              pytest -q"
 
 volumes:
   pgdata:

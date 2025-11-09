@@ -40,6 +40,9 @@ test-cache: ## Testa cache Redis (MISS vs HIT)
 	@docker compose exec -T redis redis-cli --scan | head -n3 || true
 	@$(COMPOSE) down
 
+test-docker: ## Run tests inside ephemeral container
+	@$(COMPOSE) run --rm test
+
 logs: ## Mostra i log
 	@$(COMPOSE) logs -f --tail=200
 

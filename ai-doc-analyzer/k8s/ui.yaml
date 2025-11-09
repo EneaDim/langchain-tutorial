@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  namespace: ai-doc
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: ui } }
+  template:
+    metadata: { labels: { app: ui } }
+    spec:
+      containers:
+        - name: ui
+          image: ghcr.io/OWNER/REPO/aidoc-ui:latest
+          ports: [{containerPort: 8501}]
+          env:
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: aidoc-config
+                  key: API_URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+  namespace: ai-doc
+spec:
+  selector: { app: ui }
+  ports:
+    - port: 80
+      targetPort: 8501
