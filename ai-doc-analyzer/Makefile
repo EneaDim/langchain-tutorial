@@ -27,3 +27,6 @@ start: ## Avvia lo stack in background (backend, ui, postgres, redis)
 
 stop: ## Ferma e rimuove i container (conserva i volumi)
 	@$(COMPOSE) down
+
+logs: ## Mostra i log
+	@$(COMPOSE) logs -f --tail=200
