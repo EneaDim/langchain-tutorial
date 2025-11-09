@@ -3,9 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from PyPDF2 import PdfReader
 from collections import Counter
-import re
+import re, json
 
-app = FastAPI(title="AI-Doc Analyzer API", version="0.1.0")
+from app.models.db import SessionLocal, engine
+from app.models.job import Job
+from app.services.cache import get_cached, set_cached
+
+app = FastAPI(title="AI-Doc Analyzer API", version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -43,17 +47,31 @@ def keyword_extract(text: str, k: int = 10) -> list[str]:
     return [w for w, _ in counts.most_common(k)]
 
 def summarize(text: str, sentences: int = 3) -> str:
-    # super semplice: prime N frasi pulite
     parts = re.split(r"(?<=[.!?])\s+", text.strip())
     return " ".join(parts[:sentences]).strip() or (text[:300] + ("..." if len(text) > 300 else ""))
 
 @app.post("/analyze", response_model=AnalyzeResult)
 async def analyze(file: UploadFile = File(...)):
     content = await file.read()
+    cache_key = f"analyze:{file.filename}:{len(content)}"
+    cached = get_cached(cache_key)
+    if cached:
+        data = json.loads(cached)
+        return AnalyzeResult(**data)
+
     text = extract_text_from_pdf(content)
-    kws = keyword_extract(text)
+    kws  = keyword_extract(text)
     summary = summarize(text)
-    return AnalyzeResult(pages=text.count("\f")+1 if text else 0, summary=summary, keywords=kws)
+    result = AnalyzeResult(pages=text.count("\f")+1 if text else 0, summary=summary, keywords=kws)
+
+    # Init schema (safe/idempotente) + salva job
+    Job.metadata.create_all(bind=engine)
+    with SessionLocal() as db:
+        db.add(Job(filename=file.filename, keywords=json.dumps(kws), summary=summary))
+        db.commit()
+
+    set_cached(cache_key, result.model_dump_json(), ttl=600)
+    return result
 
 @app.get("/healthz")
 def healthz():

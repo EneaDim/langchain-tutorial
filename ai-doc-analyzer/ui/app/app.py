@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import os
 
-API_URL = os.getenv("API_URL", "http://localhost:8000")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 st.set_page_config(page_title="AI-Doc Analyzer", page_icon="🧠")
 st.title("🧠 AI-Doc Analyzer")
@@ -16,7 +16,7 @@ with st.form("upload"):
         else:
             with st.spinner("Analisi in corso..."):
                 files = {"file": (f.name, f.getvalue(), "application/pdf")}
-                r = requests.post(f"{API_URL}/analyze", files=files, timeout=120)
+                r = requests.post(f"{BACKEND_URL}/analyze", files=files, timeout=120)
             if r.ok:
                 data = r.json()
                 st.success("Analisi completata ✅")

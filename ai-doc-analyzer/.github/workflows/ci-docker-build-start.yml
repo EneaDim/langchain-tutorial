@@ -1,0 +1,38 @@
+name: Docker Build & Start
+
+on:
+  push:
+    branches: ["**"]   # run on every branch
+  pull_request:
+
+jobs:
+  build_and_start:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build images
+        run: |
+          docker compose version
+          docker compose build --pull
+
+      - name: Start stack
+        run: |
+          docker compose up -d
+          docker compose ps
+
+      # (Optional) Quick internal sanity check — keep commented if you truly want only build & start
+      # - name: Sanity check (internal)
+      #   run: |
+      #     sleep 8
+      #     curl -sf http://localhost:8000/healthz || (docker compose logs backend; exit 1)
+      #     curl -sf http://localhost:8502/_stcore/health || true
+
+      - name: Stop stack
+        if: always()
+        run: docker compose down -v
