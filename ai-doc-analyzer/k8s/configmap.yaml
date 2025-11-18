@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: aidoc-config
-  namespace: ai-doc
-data:
-  DATABASE_URL: postgresql+psycopg2://ai:ai@postgres:5432/ai_doc
-  REDIS_URL: redis://redis:6379/0
-  API_URL: http://backend:8000

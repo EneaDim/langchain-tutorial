@@ -1,6 +1,0 @@
-id: executive_summary
-version: 1.0.0
-title: Executive Summary
-content_kind: document
-file: executive_summary.j2
-export: html

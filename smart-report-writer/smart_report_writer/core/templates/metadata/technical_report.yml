@@ -1,6 +1,0 @@
-id: technical_report
-version: 1.0.0
-title: Technical Report
-content_kind: document
-file: technical_report.j2
-export: html
