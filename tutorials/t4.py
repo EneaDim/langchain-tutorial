@@ -55,10 +55,20 @@ format_instructions = parser.get_format_instructions()
 # ======================
 # We keep the prompt simple: instruct to follow the required format, then provide the input.
 prompt = ChatPromptTemplate.from_template(
-    "Return the answer using the required format only.\n"
-    "{fmt}\n"
-    "Input: {q}"
+    "Sei un estrattore di dati strutturati su componenti elettronici.\n"
+    "Devi restituire **solo** un oggetto JSON, senza testo aggiuntivo, "
+    "che rappresenti **una singola parte elettronica**.\n\n"
+    "Usa le seguenti istruzioni di formato. Non ristampare lo schema, "
+    "ma compila i campi con i valori estratti dal testo.\n"
+    "{fmt}\n\n"
+    "Testo: {q}"
 )
+
+#prompt = ChatPromptTemplate.from_template(
+#    "Return the answer using the required format only.\n"
+#    "{fmt}\n"
+#    "Input: {q}"
+#)
 
 # Example raw input in natural language (Italian here, but any language is fine)
 RAW_INPUT = "Resistenza 10k 1% 0603, 0.02€, stock 2500"
